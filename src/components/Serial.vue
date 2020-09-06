@@ -159,6 +159,8 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
+  <v-alert dismissible=true :value="alert.state" :type="alert.type">{{alert.message}}</v-alert>
   </v-container>
 </template>
 
@@ -170,6 +172,12 @@ export default {
       online: false,
       setComm: false,
       sendStrText: '',
+      alert: {
+        state: false,
+        type: 'success',
+        message: 'hello'
+      },
+      // type: null,
       headers: [
         { value: 'time', text: 'Time' },
         { value: 'sender', text: 'Sender' },
@@ -180,7 +188,8 @@ export default {
   },
   mounted () {
     ipcRenderer.on('tcp', (event, msg) => {
-      console.log('client side = ' + msg)
+      this.alert.state = true
+      this.alert.message = msg
     })
   },
   methods: {
