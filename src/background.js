@@ -1,9 +1,11 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const net = require('net')
+const connectedSockets = new Set()
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -22,7 +24,8 @@ function createWindow () {
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: true
     }
   })
 
@@ -73,6 +76,11 @@ app.on('ready', async () => {
   createWindow()
 })
 
+ipcMain.on('tcp', function(e, item){
+  console.log('main = '+item);
+  
+})
+
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
@@ -87,3 +95,28 @@ if (isDevelopment) {
     })
   }
 }
+
+const server = net.createServer (function (socket) {
+  console.log(socket.address().address + 'connected')
+  connectedSockets.add(socket)
+
+  socket.on('data', function (data) {
+    let recv_Data = data.toString()
+    console.log('rcv = '+recv_Data)
+    win.webContents.send('tcp', recv_Data)
+  }),
+  socket.on('close', function(){
+    console.log('client disconnected');
+    connectedSockets.delete(socket);
+  }),
+
+  socket.write(socket.address().address + ' connected')
+})
+
+server.on('error', function(err){
+  console.log("err = "+err)
+})
+
+server.listen(9999, function(){
+  console.log("server start at 9999")
+})

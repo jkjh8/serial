@@ -22,28 +22,25 @@
     </v-card>
     <v-card>
       <v-card-text>
-        <v-text-field label="문자열을 입력하세요."></v-text-field>
+          <v-text-field v-model="sendStrText" @keyup.enter="sendStr()" label="문자열을 입력하세요."></v-text-field>
       </v-card-text>
     </v-card>
 
-    <v-dialog v-model="setComm">
+<!-- 다이얼 로그 -->
+    <v-dialog v-model="setComm" max-width=600>
     <v-card>
       <v-card-title>
         <strong>통신 설정</strong>
-        <v-spacer></v-spacer>
-        <v-btn icon @click="commPopup()">
-          <v-icon color="orange">mdi-close-circle</v-icon>
-        </v-btn>
       </v-card-title>
       <v-card-text>
-        <v-expansion-panels popout dense>
+        <v-expansion-panels class="pa-10" popout dense>
           <v-expansion-panel :key=0 hide-actions dense>
             <v-expansion-panel-header dense>
               <strong>Serial</strong>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-divider></v-divider>
-              <v-list dense>
+              <v-list class="pl-0" dense>
                 <v-list-item dense>
                   <v-select></v-select>
                 </v-list-item>
@@ -74,10 +71,17 @@
             <v-expansion-panel-header><strong>TCP Server</strong></v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-divider></v-divider>
-              <v-card-text>
-                <v-list dense>
+              <v-card-text >
+                <v-list class="pa-5 ma-5" dense>
                   <v-list-item dense>
-                    <v-text-field label="TCP Port"></v-text-field>
+                    <v-text-field label="IP"></v-text-field>
+                  </v-list-item>
+                  <v-list-item dense>
+                    <v-text-field label="Port"></v-text-field>
+                  </v-list-item>
+                  <v-list-item dense>
+                    <v-spacer></v-spacer>
+                    <v-switch></v-switch>
                   </v-list-item>
                 </v-list>
               </v-card-text>
@@ -98,24 +102,86 @@
                   </v-list-item>
                 </v-list>
               </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-switch></v-switch>
+              </v-card-actions>
             </v-expansion-panel-content>
           </v-expansion-panel>
+
+          <v-expansion-panel :key=3 hide-actions>
+            <v-expansion-panel-header><strong>UDP Server</strong></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-divider></v-divider>
+              <v-card-text>
+                <v-list dense>
+                  <v-list-item dense>
+                    <v-text-field label="IP"></v-text-field>
+                  </v-list-item>
+                  <v-list-item dense>
+                    <v-text-field label="Port"></v-text-field>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-switch color="green darken-1" label="Connect"></v-switch>
+              </v-card-actions>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel :key=4 hide-actions>
+            <v-expansion-panel-header><strong>UDP Client</strong></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-divider></v-divider>
+              <v-card-text>
+                <v-list dense>
+                  <v-list-item dense>
+                    <v-text-field label="IP"></v-text-field>
+                  </v-list-item>
+                  <v-list-item dense>
+                    <v-text-field label="Port"></v-text-field>
+                  </v-list-item>
+                  <v-list-item dense>
+                    <v-spacer></v-spacer>
+                    <v-switch></v-switch>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
         </v-expansion-panels>
       </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="green darken-1" text @click="commPopup">Close</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
   </v-container>
 </template>
 
 <script>
+const { ipcRenderer } = window.require('electron')
 export default {
   data () {
     return {
       online: false,
       setComm: false,
-      headers: [],
+      sendStrText: '',
+      headers: [
+        { value: 'time', text: 'Time' },
+        { value: 'sender', text: 'Sender' },
+        { value: 'string', text: 'String' }
+      ],
       items: []
     }
+  },
+  mounted () {
+    ipcRenderer.on('tcp', (event, msg) => {
+      console.log('client side = ' + msg)
+    })
   },
   methods: {
     commPopup () {
@@ -124,7 +190,15 @@ export default {
       } else {
         this.setComm = true
       }
+    },
+    sendStr () {
+      console.log(this.sendStrText)
+      ipcRenderer.send('tcp', this.sendStrText)
     }
   }
 }
 </script>
+
+<style lang="sass">
+
+</style>
