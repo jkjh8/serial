@@ -76,11 +76,6 @@ app.on('ready', async () => {
   createWindow()
 })
 
-ipcMain.on('tcp', function(e, item){
-  console.log('main = '+item);
-  
-})
-
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
@@ -93,6 +88,20 @@ if (isDevelopment) {
     process.on('SIGTERM', () => {
       app.quit()
     })
+  }
+}
+
+ipcMain.on('tcp', function(e, item){
+  console.log('main = '+item)
+  connectedSockets.broadcast(item)
+  
+})
+
+connectedSockets.broadcast = function (data, except) {
+  for (let socket of this) {
+    if (socket !== except) {
+      socket.write(data)
+    }
   }
 }
 

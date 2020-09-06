@@ -160,7 +160,7 @@
     </v-card>
   </v-dialog>
 
-  <v-alert dismissible=true :value="alert.state" :type="alert.type">{{alert.message}}</v-alert>
+  <v-alert dismissible :value="alert.state" :type="alert.type">{{alert.message}}</v-alert>
   </v-container>
 </template>
 
