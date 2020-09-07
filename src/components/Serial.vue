@@ -26,8 +26,12 @@
       </v-card-text>
     </v-card>
 
+<<<<<<< HEAD
 <!-- 다이얼 로그 -->
     <v-dialog v-model="setComm" max-width=600>
+=======
+    <v-dialog v-model="setComm" max-width=600 scrollable=true>
+>>>>>>> 1ec31879416c99bb64db077e7e5b3755f270c524
     <v-card>
       <v-card-title>
         <strong>통신 설정</strong>
@@ -106,6 +110,7 @@
                 <v-spacer></v-spacer>
                 <v-switch></v-switch>
               </v-card-actions>
+<<<<<<< HEAD
             </v-expansion-panel-content>
           </v-expansion-panel>
 
@@ -130,6 +135,32 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
 
+=======
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel :key=3 hide-actions>
+            <v-expansion-panel-header><strong>UDP Server</strong></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-divider></v-divider>
+              <v-card-text>
+                <v-list dense>
+                  <v-list-item dense>
+                    <v-text-field label="IP"></v-text-field>
+                  </v-list-item>
+                  <v-list-item dense>
+                    <v-text-field label="Port"></v-text-field>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-switch color="green darken-1" label="Connect"></v-switch>
+              </v-card-actions>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+>>>>>>> 1ec31879416c99bb64db077e7e5b3755f270c524
           <v-expansion-panel :key=4 hide-actions>
             <v-expansion-panel-header><strong>UDP Client</strong></v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -171,6 +202,7 @@ export default {
     return {
       online: false,
       setComm: false,
+<<<<<<< HEAD
       sendStrText: '',
       alert: {
         state: false,
@@ -178,6 +210,8 @@ export default {
         message: 'hello'
       },
       // type: null,
+=======
+>>>>>>> 1ec31879416c99bb64db077e7e5b3755f270c524
       headers: [
         { value: 'time', text: 'Time' },
         { value: 'sender', text: 'Sender' },
