@@ -33,6 +33,7 @@
     <div class="q-mx-md">
       <q-input
         v-model="text"
+        bg-color="blue-grey-9"
         input-class="text-grey-1"
         filled
         dense
@@ -71,7 +72,7 @@ export default {
 
 <style>
 .bk-gr-blue {
-  background: linear-gradient(to bottom right, rgb(90, 90, 190), #001e3c);
+  background: linear-gradient(to bottom right, rgb(110, 110, 190), #001e3c);
 }
 .funcName {
   font-size: 10px;

@@ -13,6 +13,20 @@
         <q-toolbar-title style="font-weight: 700">
           Serial Test App
         </q-toolbar-title>
+
+        <div>
+          <q-btn
+            icon="svguse:icons.svg#trash"
+            round
+            flat
+            color="red-10"
+            size="sm"
+          >
+            <q-tooltip style="background: rgba(0, 0, 5, 0.5)">
+              Clear
+            </q-tooltip>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -39,7 +53,9 @@
 import Links from '../components/LeftMenu.vue'
 import Footer from '../components/Footer.vue'
 
-import { defineComponent, ref, computed } from 'vue'
+import { parsing } from '../api/parsing'
+
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -50,7 +66,6 @@ export default defineComponent({
   },
   setup() {
     const { state, commit } = useStore()
-
     const leftDrawerOpen = ref(true)
     const leftDrawerMini = computed({
       get() {
@@ -59,6 +74,17 @@ export default defineComponent({
       set() {
         return commit('menu/changeDrawer')
       }
+    })
+
+    onMounted(() => {
+      window.API.onResponse((args) => {
+        parsing(args)
+        // switch (args.command) {
+        //   case 'serialports':
+        //     commit('serial/updateSerialPorts', args.list)
+        //     break
+        // }
+      })
     })
     return {
       leftDrawerOpen,

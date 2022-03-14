@@ -82,7 +82,10 @@
         <template #header>
           <q-item-section avatar>
             <q-avatar :color="serialOn ? 'blue-1' : 'grey-2'" size="md">
-              <q-icon name="svguse:icons.svg#ethernet" />
+              <q-icon
+                name="svguse:icons.svg#ethernet"
+                @click.prevent.stop="openDrawer"
+              />
               <q-badge
                 v-if="tcpOn"
                 floating
@@ -131,7 +134,10 @@
         <template #header>
           <q-item-section avatar>
             <q-avatar :color="udpOn ? 'blue-1' : 'grey-2'" size="md">
-              <q-icon name="svguse:icons.svg#ethernet" />
+              <q-icon
+                name="svguse:icons.svg#ethernet"
+                @click.prevent.stop="openDrawer"
+              />
               <q-badge
                 v-if="udpOn"
                 floating
@@ -180,7 +186,10 @@
         <template #header>
           <q-item-section avatar>
             <q-avatar :color="udpOn ? 'blue-1' : 'grey-2'" size="md">
-              <q-icon name="svguse:icons.svg#ethernet" />
+              <q-icon
+                name="svguse:icons.svg#ethernet"
+                @click.prevent.stop="openDrawer"
+              />
               <q-badge
                 v-if="udpOn"
                 floating
@@ -235,16 +244,18 @@
 </template>
 
 <script>
-import { ref, reactive, toRefs } from 'vue'
+import { ref, reactive, toRefs, computed } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
   setup() {
-    const { commit } = useStore()
+    const { commit, getters } = useStore()
+    // start btns
     const serialOn = ref(false)
     const tcpOn = ref(false)
     const udpOn = ref(false)
     const senderOn = ref(false)
+    // comm args
     const serial = reactive({
       comm: null,
       baud: 9600,
@@ -267,7 +278,8 @@ export default {
       senderPort: 1024,
       senderMulticast: false
     })
-    const serialComms = ref([])
+    // get Serialports
+    const serialComms = computed(() => getters['serial/getPath'])
 
     const openDrawer = () => {
       commit('menu/changeDrawer', true)
