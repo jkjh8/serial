@@ -1,61 +1,81 @@
 <template>
   <q-layout view="hHh lpr fff">
-    <q-header elevated>
+    <q-header class="bg-white text-grey-10" style="padding: 0 1%" bordered>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-avatar class="mainMenuIcon">
+          <q-icon
+            style="cursor: pointer"
+            name="svguse:icons.svg#ethernet-color"
+            size="sm"
+            @click="toggleLeftDrawer"
+          ></q-icon>
+        </q-avatar>
+        <q-toolbar-title style="font-weight: 700">
+          Serial Test App
+        </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
+      :width="220"
       show-if-above
       behavior="desktop"
       :mini="leftDrawerMini"
       bordered
     >
-      <EssentialLink />
+      <Links />
     </q-drawer>
 
     <q-page-container>
       <router-view />
     </q-page-container>
 
-    <q-footer> footer </q-footer>
+    <q-footer> <Footer /> </q-footer>
   </q-layout>
 </template>
 
 <script>
-import EssentialLink from '../components/leftLink.vue'
+import Links from '../components/LeftMenu.vue'
+import Footer from '../components/Footer.vue'
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'MainLayout',
   components: {
-    EssentialLink
+    Links,
+    Footer
   },
   setup() {
-    const leftDrawerOpen = ref(true)
-    const leftDrawerMini = ref(false)
+    const { state, commit } = useStore()
 
+    const leftDrawerOpen = ref(true)
+    const leftDrawerMini = computed({
+      get() {
+        return state.menu.drawer
+      },
+      set() {
+        return commit('menu/changeDrawer')
+      }
+    })
     return {
       leftDrawerOpen,
       leftDrawerMini,
       toggleLeftDrawer() {
-        leftDrawerMini.value = !leftDrawerMini.value
+        commit('menu/changeDrawer')
       }
     }
   }
 })
 </script>
+
+<style scoped>
+.mainMenuIcon {
+  background: #fefefe;
+}
+.mainMenuIcon:hover {
+  background: #eeeeee;
+}
+</style>
