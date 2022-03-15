@@ -1,6 +1,5 @@
 export function addMessage(state, payload) {
   state.message.unshift(payload)
-  console.log(state.message)
 }
 
 export function clearMessage(state) {

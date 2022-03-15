@@ -1,14 +1,7 @@
 <template>
   <div class="bk-gr-blue">
     <div class="q-py-md q-pr-md q-gutter-x-sm row justify-end items-center">
-      <span class="funcName">Send CR</span>
-      <q-toggle
-        v-model="sendCR"
-        dense
-        checked-icon="check"
-        unchecked-icon="clear"
-      />
-      <span class="funcName">Send LF</span>
+      <span class="funcName">Send CRLF</span>
       <q-toggle
         v-model="sendLF"
         dense
@@ -40,9 +33,10 @@
         dense
         label="Message"
         label-color="grey-4"
+        @keyup.enter="send"
       >
         <template #after>
-          <q-btn icon="send" round flat color="grey-2"></q-btn>
+          <q-btn icon="send" round flat color="grey-2" @click="send"></q-btn>
         </template>
       </q-input>
     </div>
@@ -56,24 +50,31 @@ import { useStore } from 'vuex'
 export default {
   setup() {
     const { commit } = useStore()
-    const sendCR = ref(false)
     const sendLF = ref(false)
     const showHex = ref(false)
     const sendHex = ref(false)
     const text = ref('')
 
     function setShowHex(value) {
-      console.log('update', value)
       commit('message/changeShowHex', value)
     }
 
+    function send() {
+      window.API.onRequest({
+        command: 'send',
+        sendLF: sendLF.value,
+        sendHex: sendHex.value,
+        message: text.value
+      })
+    }
+
     return {
-      sendCR,
       sendLF,
       showHex,
       sendHex,
       text,
-      setShowHex
+      setShowHex,
+      send
     }
   }
 }

@@ -4,8 +4,11 @@ import {
   createTCPServer,
   distoryTCPServer,
   connectTCPServer,
-  disconnectTCPServer
+  disconnectTCPServer,
+  TCPWrite
 } from '../tcp'
+
+import { createUDPServer, distoryUDPServer } from '../udp'
 
 function rtMsg(args) {
   BrowserWindow.fromId(1).webContents.send('onResponse', args)
@@ -30,7 +33,26 @@ ipcMain.on('onRequest', async (e, args) => {
     case 'tcpclientdisconnect':
       disconnectTCPServer()
       break
+    case 'udpserveropen':
+      createUDPServer(args.port, args.host, args.multicast)
+      break
+    case 'udpserverclose':
+      distoryUDPServer()
+      break
+    case 'send':
+      let message = args.message
+      if (args.sendHex) {
+        const buffer = Buffer.from(message, 'hex')
+        console.log(buffer.length)
+        TCPWrite(buffer)
+      } else {
+        if (args.sendLF) {
+          message += '\r\n'
+        }
+        TCPWrite(message)
+      }
 
+      break
     default:
       console.log(args)
       break

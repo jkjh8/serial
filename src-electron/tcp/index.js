@@ -145,11 +145,23 @@ function connectTCPServer(port, host) {
 
 function disconnectTCPServer() {
   client.destroy()
+  client = null
+}
+
+function TCPWrite(data) {
+  if (server) {
+    if (clients.length) {
+      clients.forEach((socket) => {
+        socket.write(data)
+      })
+    }
+  }
 }
 
 export {
   createTCPServer,
   distoryTCPServer,
   connectTCPServer,
-  disconnectTCPServer
+  disconnectTCPServer,
+  TCPWrite
 }

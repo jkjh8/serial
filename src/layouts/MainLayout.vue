@@ -46,7 +46,7 @@
       <router-view />
     </q-page-container>
 
-    <q-footer> <Footer /> </q-footer>
+    <q-footer reveal> <Footer /> </q-footer>
   </q-layout>
 </template>
 

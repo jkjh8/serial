@@ -116,10 +116,18 @@
             label="IP Address"
             filled
             dense
+            :disable="tcpOn"
             :rules="rules.ipaddress"
             lazy-rules
           />
-          <q-input v-model="tcpPort" label="Port" filled dense type="Number" />
+          <q-input
+            v-model="tcpPort"
+            label="Port"
+            filled
+            dense
+            type="Number"
+            :disable="tcpOn"
+          />
           <div class="row justify-between items-center">
             <div class="q-ml-sm connect">Connect</div>
             <q-toggle
@@ -163,14 +171,23 @@
             dense
             :rules="rules.ipaddress"
             lazy-rules
+            :disable="udpOn"
           />
-          <q-input v-model="udpPort" label="Port" filled dense type="Number" />
+          <q-input
+            v-model="udpPort"
+            label="Port"
+            filled
+            dense
+            type="Number"
+            :disable="udpOn"
+          />
           <div class="row justify-between items-center">
             <div class="q-ml-sm connect">Multicast</div>
             <q-toggle
               v-model="udpMulticast"
               checked-icon="check"
               unchecked-icon="clear"
+              :disable="udpOn"
             />
           </div>
           <div class="row justify-between items-center">
@@ -179,6 +196,7 @@
               v-model="udpOn"
               checked-icon="check"
               unchecked-icon="clear"
+              @update:model-value="udpOnSW"
             />
           </div>
         </div>
@@ -187,13 +205,13 @@
       <q-expansion-item expand-separator>
         <template #header>
           <q-item-section avatar>
-            <q-avatar :color="udpOn ? 'blue-1' : 'grey-2'" size="md">
+            <q-avatar :color="senderOn ? 'blue-1' : 'grey-2'" size="md">
               <q-icon
                 name="svguse:icons.svg#ethernet"
                 @click.prevent.stop="openDrawer"
               />
               <q-badge
-                v-if="udpOn"
+                v-if="senderOn"
                 floating
                 transparent
                 rounded
@@ -215,6 +233,7 @@
             dense
             :rules="rules.ipaddress"
             lazy-rules
+            :disable="senderOn"
           />
           <q-input
             v-model="senderPort"
@@ -222,6 +241,7 @@
             filled
             dense
             type="Number"
+            :disable="senderOn"
           />
           <div class="row justify-between items-center">
             <div class="q-ml-sm connect">Multicast</div>
@@ -229,6 +249,7 @@
               v-model="senderMulticast"
               checked-icon="check"
               unchecked-icon="clear"
+              :disable="senderOn"
             />
           </div>
           <div class="row justify-between items-center">
@@ -271,7 +292,7 @@ export default {
       tcpPort: 1024
     })
     const udpServer = reactive({
-      udpIpaddr: '',
+      udpIpaddr: '0.0.0.0',
       udpPort: 1024,
       udpMulticast: false
     })
@@ -312,6 +333,42 @@ export default {
       }
     }
 
+    function udpOnSW(value) {
+      if (value) {
+        let ipaddr = udpServer.udpIpaddr.split('.')
+        if (udpServer.udpMulticast) {
+          if (Number(ipaddr[0]) < 224 || Number(ipaddr[0]) > 239) {
+            return (udpOn.value = false)
+          }
+        } else {
+          if (Number(ipaddr[0] >= 224)) {
+            return (udpOn.value = false)
+          }
+        }
+        window.API.onRequest({
+          command: 'udpserveropen',
+          port: udpServer.udpPort,
+          host: udpServer.udpIpaddr,
+          multicast: udpServer.udpMulticast
+        })
+      } else {
+        window.API.onRequest({ command: 'udpserverclose' })
+      }
+    }
+
+    function senderOnSW(value) {
+      if (value) {
+        window.API.onRequest({
+          command: 'senderopen',
+          port: sender.senderPort,
+          host: sender.senderIpaddr,
+          multicast: sender.senderMulticast
+        })
+      } else {
+        window.API.onRequest({ command: 'senderclose' })
+      }
+    }
+
     // rt request
     onMounted(() => {
       window.API.onResponse((args) => {
@@ -346,7 +403,9 @@ export default {
       udpOn,
       senderOn,
       openDrawer,
-      tcpOnSW
+      tcpOnSW,
+      udpOnSW,
+      senderOnSW
     }
   }
 }
