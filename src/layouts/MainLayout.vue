@@ -21,6 +21,7 @@
             flat
             color="red-10"
             size="sm"
+            @click="clearTable"
           >
             <q-tooltip style="background: rgba(0, 0, 5, 0.5)">
               Clear
@@ -76,6 +77,10 @@ export default defineComponent({
       }
     })
 
+    function clearTable() {
+      commit('message/clearMessage')
+    }
+
     onMounted(() => {
       window.API.onResponse((args) => {
         parsing(args)
@@ -89,6 +94,7 @@ export default defineComponent({
     return {
       leftDrawerOpen,
       leftDrawerMini,
+      clearTable,
       toggleLeftDrawer() {
         commit('menu/changeDrawer')
       }

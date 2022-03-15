@@ -3,13 +3,15 @@ import { createStore } from 'vuex'
 
 import menu from './menu'
 import serial from './serial'
+import message from './message'
 
 let Store
 export default store(function (/* { ssrContext } */) {
   Store = createStore({
     modules: {
       menu,
-      serial
+      serial,
+      message
     },
 
     // enable strict mode (adds overhead!)

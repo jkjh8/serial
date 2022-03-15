@@ -21,6 +21,7 @@
         dense
         checked-icon="check"
         unchecked-icon="clear"
+        @update:model-value="setShowHex"
       />
       <span class="funcName">Send Bytes</span>
       <q-toggle
@@ -50,21 +51,29 @@
 
 <script>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
 
 export default {
   setup() {
+    const { commit } = useStore()
     const sendCR = ref(false)
     const sendLF = ref(false)
     const showHex = ref(false)
     const sendHex = ref(false)
     const text = ref('')
 
+    function setShowHex(value) {
+      console.log('update', value)
+      commit('message/changeShowHex', value)
+    }
+
     return {
       sendCR,
       sendLF,
       showHex,
       sendHex,
-      text
+      text,
+      setShowHex
     }
   }
 }

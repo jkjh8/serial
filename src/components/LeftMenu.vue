@@ -109,6 +109,7 @@
             label="Mode"
             filled
             dense
+            :disable="tcpOn"
           />
           <q-input
             v-model="tcpIpaddr"
@@ -125,6 +126,7 @@
               v-model="tcpOn"
               checked-icon="check"
               unchecked-icon="clear"
+              @update:model-value="tcpOnSW"
             />
           </div>
         </div>
@@ -244,7 +246,7 @@
 </template>
 
 <script>
-import { ref, reactive, toRefs, computed } from 'vue'
+import { ref, reactive, toRefs, computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
 export default {
@@ -265,7 +267,7 @@ export default {
     })
     const tcp = reactive({
       tcpMode: 'Server',
-      tcpIpaddr: '',
+      tcpIpaddr: '0.0.0.0',
       tcpPort: 1024
     })
     const udpServer = reactive({
@@ -284,6 +286,44 @@ export default {
     const openDrawer = () => {
       commit('menu/changeDrawer', true)
     }
+
+    function tcpOnSW(value) {
+      if (tcp.tcpMode === 'Server') {
+        if (value) {
+          window.API.onRequest({
+            command: 'tcpserveropen',
+            port: tcp.tcpPort,
+            host: tcp.tcpIpaddr
+          })
+        } else {
+          console.log('else')
+          window.API.onRequest({ command: 'tcpserverclose' })
+        }
+      } else {
+        if (value) {
+          window.API.onRequest({
+            command: 'tcpclientconnect',
+            host: tcp.tcpIpaddr,
+            port: tcp.tcpPort
+          })
+        } else {
+          window.API.onRequest({ command: 'tcpclientdisconnect' })
+        }
+      }
+    }
+
+    // rt request
+    onMounted(() => {
+      window.API.onResponse((args) => {
+        switch (args.command) {
+          case 'tcperror':
+          case 'tcpclose':
+            console.log('tcp close')
+            tcpOn.value = false
+            break
+        }
+      })
+    })
 
     return {
       rules: {
@@ -305,7 +345,8 @@ export default {
       tcpOn,
       udpOn,
       senderOn,
-      openDrawer
+      openDrawer,
+      tcpOnSW
     }
   }
 }

@@ -1758,6 +1758,11 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+amrhextotext@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/amrhextotext/-/amrhextotext-1.1.1.tgz#1c5efe78bccd8c9a7530a253deffa14719e0a03b"
+  integrity sha512-+Dx2fM/kQO6JAHrvcav1k0pLxAWNR8xgJAWv/weH1Ip1HpaIBRnsjyYud+uy+JL5b2v7OLP669qJ6SP6LioRcQ==
+
 ansi-colors@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npmjs.org/ansi-colors/-/ansi-colors-4.1.1.tgz"
@@ -4466,6 +4471,11 @@ mkdirp@^0.5.4, mkdirp@^0.5.5:
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+moment@^2.29.1:
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
 mrmime@^1.0.0:
   version "1.0.0"

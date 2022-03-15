@@ -6,5 +6,8 @@ export const parsing = (args) => {
     case 'serialports':
       Store.commit('serial/updateSerialPorts', args.list)
       break
+    case 'msg':
+      Store.dispatch('message/addMessage', { ...args })
+      break
   }
 }
