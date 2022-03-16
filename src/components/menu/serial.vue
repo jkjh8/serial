@@ -192,6 +192,8 @@ export default {
           command: 'serialportopen',
           serial: { ...serialOptions }
         })
+      } else {
+        window.API.onRequest({ command: 'serialportclose' })
       }
     }
 

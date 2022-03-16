@@ -73,7 +73,8 @@ function UDPSenderSend(data) {
       command: 'msg',
       protocol: 'UDP Sender',
       from: 'Send',
-      message: data
+      message: data,
+      type: 'byte'
     })
   }
 }

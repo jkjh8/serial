@@ -57,7 +57,13 @@ function serialPortClose() {
 function serialPortSend(data) {
   if (port) {
     port.write(data)
-    rtMsg({ command: 'msg', protocol: 'Serial', from: 'Send', message: data })
+    rtMsg({
+      command: 'msg',
+      protocol: 'Serial',
+      from: 'Send',
+      message: data,
+      type: 'byte'
+    })
   }
 }
 
