@@ -14,8 +14,11 @@
           Serial Test App
         </q-toolbar-title>
 
-        <div>
+        <div class="row items-center q-gutter-x-sm">
+          <q-input class="self-end" v-model="filter" filled dense clearable>
+          </q-input>
           <q-btn
+            class="self-start q-mt-xs"
             icon="svguse:icons.svg#trash"
             round
             flat
@@ -77,6 +80,15 @@ export default defineComponent({
       }
     })
 
+    const filter = computed({
+      get() {
+        return state.message.filter
+      },
+      set(v) {
+        return commit('message/updateFilter', v)
+      }
+    })
+
     function clearTable() {
       commit('message/clearMessage')
     }
@@ -94,6 +106,7 @@ export default defineComponent({
     return {
       leftDrawerOpen,
       leftDrawerMini,
+      filter,
       clearTable,
       toggleLeftDrawer() {
         commit('menu/changeDrawer')

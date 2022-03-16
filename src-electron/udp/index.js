@@ -28,7 +28,8 @@ function createUDPServer(port, host, multicast) {
       command: 'msg',
       protocol: 'UDP Server',
       from: `${remote.address}:${remote.port}`,
-      message: message.toString()
+      message: message,
+      type: 'byte'
     })
   })
   if (multicast) {

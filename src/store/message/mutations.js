@@ -9,3 +9,7 @@ export function clearMessage(state) {
 export function changeShowHex(state, payload) {
   state.showHex = payload
 }
+
+export function updateFilter(state, payload) {
+  state.filter = payload
+}

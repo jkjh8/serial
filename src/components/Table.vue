@@ -34,6 +34,7 @@
     :rows="rows"
     row-key="time"
     flat
+    :filter="filter"
     :pagination="{ rowsPerPage: 20 }"
   >
     <template #body="props">
@@ -55,7 +56,7 @@
           :props="props"
           class="row no-wrap justify-start items-center"
         >
-          <div v-if="showHex" class="message">
+          <div v-if="showHex && props.row.type === 'byte'" class="message">
             {{ stringToHex(props.row.message) }}
             <q-btn
               round
@@ -68,8 +69,23 @@
             </q-btn>
           </div>
 
+          <div
+            v-else-if="!showHex && props.row.type === 'byte'"
+            class="message"
+          >
+            {{ bufToString(props.row.message) }}
+            <q-btn
+              round
+              flat
+              icon="svguse:icons.svg#copy"
+              size="sm"
+              color="primary"
+              @click="clipboardCopy(props.row.message)"
+            >
+            </q-btn>
+          </div>
           <div v-else class="message">
-            {{ props.row.message.toString() }}
+            {{ props.row.message }}
             <q-btn
               round
               flat
@@ -97,12 +113,16 @@ export default {
     const { state } = useStore()
     const rows = computed(() => state.message.message)
     const showHex = computed(() => state.message.showHex)
+    const filter = computed(() => state.message.filter)
 
     moment.locale('ko')
 
     function stringToHex(str) {
+      console.log(typeof str)
+      console.log(str)
       let output = ''
-      let bufStr = Buffer.from(str)
+      let bufStr = str
+
       for (let i = 0; i < bufStr.length; i++) {
         output += (bufStr[i] + Math.pow(16, 2)).toString(16).substr(-2)
         if (i !== bufStr.length) {
@@ -110,6 +130,12 @@ export default {
         }
       }
       return output
+    }
+
+    function bufToString(str) {
+      const bufStr = Buffer.from(str)
+      console.log('tostring = ', str.toString('hex'))
+      return bufStr.toString('utf8')
     }
 
     function clipboardCopy(val) {
@@ -125,7 +151,9 @@ export default {
       rows,
       showHex,
       moment,
+      filter,
       stringToHex,
+      bufToString,
       clipboardCopy
     }
   }

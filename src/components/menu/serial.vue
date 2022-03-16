@@ -30,7 +30,7 @@
         dense
         label="Com Port"
         :rules="rules.required"
-        :disabled="serialOn"
+        :disable="serialOn"
       >
         <template #append>
           <q-btn
@@ -51,7 +51,7 @@
         filled
         dense
         label="Baud Rate"
-        :disabled="serialOn"
+        :disable="serialOn"
       />
       <!-- <q-select
         v-model="dataBits"
@@ -59,7 +59,7 @@
         filled
         dense
         label="Data Bit"
-        :disabled="serialOn"
+        :disable="serialOn"
       />
       <q-select
         v-model="stopBits"
@@ -67,7 +67,7 @@
         filled
         dense
         label="Stop Bit"
-        :disabled="serialOn"
+        :disable="serialOn"
       />
       <q-select
         v-model="parity"
@@ -75,7 +75,7 @@
         filled
         dense
         label="Parity"
-        :disabled="serialOn"
+        :disable="serialOn"
       />
       <q-select
         v-model="rtsMode"
@@ -83,7 +83,7 @@
         filled
         dense
         label="RtsMode"
-        :disabled="serialOn"
+        :disable="serialOn"
       />
       <div class="row justify-between items-center">
         <div class="q-ml-sm connect">RtsCts</div>

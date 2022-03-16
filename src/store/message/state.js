@@ -1,6 +1,7 @@
 export default function () {
   return {
     message: [],
-    showHex: false
+    showHex: false,
+    filter: ''
   }
 }

@@ -14,7 +14,7 @@ function serialPortOpen(serial) {
       return rtMsg({
         command: 'msg',
         protocol: 'Serial',
-        from: comm,
+        from: com,
         message: err
       })
     }
@@ -30,12 +30,15 @@ function serialPortOpen(serial) {
     rtMsg({ command: 'msg', protocol: 'Serial', from: com, message: err })
   })
 
-  port.on('data', (data) => {
+  port.on('readable', () => {
+    const data = port.read()
+    console.log(data)
     rtMsg({
       command: 'msg',
       protocol: 'Serial',
       from: com,
-      message: data.toString()
+      message: data,
+      type: 'byte'
     })
   })
 }

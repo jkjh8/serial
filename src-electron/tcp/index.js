@@ -1,7 +1,5 @@
-import { BrowserWindow } from 'electron'
 import { rtMsg } from '../ipc'
 import net from 'net'
-import { createSocket } from 'dgram'
 
 let server
 let client
@@ -53,7 +51,8 @@ function createTCPServer(port, host) {
           command: 'msg',
           protocol: 'TCP Server',
           from: address,
-          message: data.toString()
+          message: data,
+          type: 'byte'
         })
       })
     })
@@ -158,7 +157,8 @@ function TCPWrite(data) {
         command: 'msg',
         protocol: 'TCP Server',
         from: 'Send',
-        message: data
+        message: data,
+        type: 'byte'
       })
     }
   }
@@ -168,7 +168,8 @@ function TCPWrite(data) {
       command: 'msg',
       protocol: 'TCP Client',
       from: 'Send',
-      message: data
+      message: data,
+      type: 'byte'
     })
   }
 }
