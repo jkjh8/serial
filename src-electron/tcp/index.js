@@ -154,7 +154,22 @@ function TCPWrite(data) {
       clients.forEach((socket) => {
         socket.write(data)
       })
+      rtMsg({
+        command: 'msg',
+        protocol: 'TCP Server',
+        from: 'Send',
+        message: data
+      })
     }
+  }
+  if (client) {
+    client.write(data)
+    rtMsg({
+      command: 'msg',
+      protocol: 'TCP Client',
+      from: 'Send',
+      message: data
+    })
   }
 }
 

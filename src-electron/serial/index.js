@@ -1,7 +1,61 @@
 import { SerialPort } from 'serialport'
+import { rtMsg } from '../ipc'
 
+let port
+let com
 function getPort() {
   return SerialPort.list()
 }
 
-export { getPort }
+function serialPortOpen(serial) {
+  com = serial.path
+  port = new SerialPort(serial, (err) => {
+    if (err) {
+      return rtMsg({
+        command: 'msg',
+        protocol: 'Serial',
+        from: comm,
+        message: err
+      })
+    }
+    rtMsg({
+      command: 'msg',
+      protocol: 'Serial',
+      from: com,
+      message: `Serial Port Open Path: ${com}`
+    })
+  })
+
+  port.on('error', (err) => {
+    rtMsg({ command: 'msg', protocol: 'Serial', from: com, message: err })
+  })
+
+  port.on('data', (data) => {
+    rtMsg({
+      command: 'msg',
+      protocol: 'Serial',
+      from: com,
+      message: data.toString()
+    })
+  })
+}
+
+function serialPortClose() {
+  port.close()
+  port = null
+  rtMsg({
+    command: 'msg',
+    protocol: 'Serial',
+    from: com,
+    message: 'Serial Port Closed'
+  })
+}
+
+function serialPortSend(data) {
+  if (port) {
+    port.write(data)
+    rtMsg({ command: 'msg', protocol: 'Serial', from: 'Send', message: data })
+  }
+}
+
+export { getPort, serialPortOpen, serialPortClose, serialPortSend }

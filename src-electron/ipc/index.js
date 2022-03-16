@@ -1,5 +1,10 @@
 import { BrowserWindow, ipcMain } from 'electron'
-import { getPort } from '../serial'
+import {
+  getPort,
+  serialPortOpen,
+  serialPortClose,
+  serialPortSend
+} from '../serial'
 import {
   createTCPServer,
   distoryTCPServer,
@@ -8,7 +13,13 @@ import {
   TCPWrite
 } from '../tcp'
 
-import { createUDPServer, distoryUDPServer } from '../udp'
+import {
+  createUDPServer,
+  distoryUDPServer,
+  createUDPSender,
+  closeUDPSender,
+  UDPSenderSend
+} from '../udp'
 
 function rtMsg(args) {
   BrowserWindow.fromId(1).webContents.send('onResponse', args)
@@ -19,7 +30,15 @@ ipcMain.on('onRequest', async (e, args) => {
     case 'start':
       rtMsg({ command: 'serialports', list: await getPort() })
       break
-
+    case 'serialport':
+      rtMsg({ command: 'serialports', list: await getPort() })
+      break
+    case 'serialportopen':
+      serialPortOpen(args.serial)
+      break
+    case 'serialportclose':
+      serialPortClose()
+      break
     case 'tcpserveropen':
       createTCPServer(args.port, args.host)
       break
@@ -39,17 +58,32 @@ ipcMain.on('onRequest', async (e, args) => {
     case 'udpserverclose':
       distoryUDPServer()
       break
+    case 'udpsenderopen':
+      console.log('sender open')
+      createUDPSender(args.port, args.host, args.multicast)
+      break
+    case 'udpsenderclose':
+      closeUDPSender()
+      break
     case 'send':
       let message = args.message
+      if (args.sendLF) {
+        message += '\r\n'
+      }
+      console.log(message)
       if (args.sendHex) {
-        const buffer = Buffer.from(message, 'hex')
-        console.log(buffer.length)
-        TCPWrite(buffer)
-      } else {
+        let buffer = Buffer.from(message, 'hex')
         if (args.sendLF) {
-          message += '\r\n'
+          let CRLF = Buffer.from([0x0d, 0x0a])
+          buffer = Buffer.concat([buffer, CRLF])
         }
+        TCPWrite(buffer)
+        UDPSenderSend(buffer)
+        serialPortSend(buffer)
+      } else {
         TCPWrite(message)
+        UDPSenderSend(message)
+        serialPortSend(message)
       }
 
       break

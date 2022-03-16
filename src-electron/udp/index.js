@@ -2,11 +2,11 @@ import dgram from 'dgram'
 import { rtMsg } from '../ipc'
 let server
 let client
+let senderAddress
 const controller = new AbortController()
 const { signal } = controller
 
 function createUDPServer(port, host, multicast) {
-  console.log(multicast)
   server = dgram.createSocket('udp4', signal)
   let address
   server.on('listening', () => {
@@ -24,7 +24,6 @@ function createUDPServer(port, host, multicast) {
   })
 
   server.on('message', (message, remote) => {
-    console.log(message)
     rtMsg({
       command: 'msg',
       protocol: 'UDP Server',
@@ -49,4 +48,38 @@ function distoryUDPServer() {
   })
 }
 
-export { createUDPServer, distoryUDPServer }
+function createUDPSender(port, host, multicast) {
+  senderAddress = { port: port, host: host }
+  client = dgram.createSocket('udp4')
+  client.bind()
+  if (multicast) {
+    client.setBroadcast(true)
+    client.setMulticastTTL(128)
+    client.addMembership(host)
+  }
+  rtMsg({ command: 'msg', protocol: 'UDP Sender', message: 'UDP Sender Ready' })
+}
+
+function closeUDPSender() {
+  client.close()
+  client = null
+}
+
+function UDPSenderSend(data) {
+  if (client) {
+    client.send(data, 0, data.length, senderAddress.port, senderAddress.host)
+    rtMsg({
+      command: 'msg',
+      protocol: 'UDP Sender',
+      from: 'Send',
+      message: data
+    })
+  }
+}
+export {
+  createUDPServer,
+  distoryUDPServer,
+  createUDPSender,
+  closeUDPSender,
+  UDPSenderSend
+}
