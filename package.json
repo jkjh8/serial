@@ -2,7 +2,7 @@
   "name": "serial",
   "version": "0.0.1",
   "description": "serial test tool",
-  "productName": "serial test tools",
+  "productName": "serial test tool",
   "author": "'jkjh8' <'jkjh82@naver.com'>",
   "private": true,
   "scripts": {
@@ -26,6 +26,8 @@
     "@babel/eslint-parser": "^7.13.14",
     "@quasar/app": "^3.0.0",
     "electron": "^17.1.2",
+    "electron-builder": "^22.4.0",
+    "electron-packager": "^15.2.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^7.0.0",
