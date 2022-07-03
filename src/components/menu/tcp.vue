@@ -91,11 +91,23 @@ export default {
     function fnTcpOn(value) {
       if (tcp.mode === 'Server') {
         if (value) {
-          window.API.onRequest({
+          API.onRequest({
             command: 'tcpserveropen',
             port: tcp.port,
             host: tcp.ipaddr
           })
+        } else {
+          API.onRequest({ command: 'tcpserverclose' })
+        }
+      } else {
+        if (value) {
+          API.onRequest({
+            command: 'tcpclientconnect',
+            port: tcp.port,
+            host: tcp.ipaddr
+          })
+        } else {
+          API.onRequest({ command: 'tcpclientdisconnect' })
         }
       }
     }
@@ -105,7 +117,7 @@ export default {
     }
 
     onMounted(() => {
-      window.API.onResponse((args) => {
+      API.onResponse((args) => {
         switch (args.command) {
           case 'tcperror':
           case 'tcpclose':

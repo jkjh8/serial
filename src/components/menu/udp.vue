@@ -106,14 +106,14 @@ export default {
             return (udpOn.value = false)
           }
         }
-        window.API.onRequest({
+        API.onRequest({
           command: `udp${proMode}open`,
           port: udp.port,
           host: udp.ipaddr,
           multicast: udp.multicast
         })
       } else {
-        window.API.onRequest({
+        API.onRequest({
           command: `udp${proMode}close`
         })
       }

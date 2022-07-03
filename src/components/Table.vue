@@ -56,7 +56,7 @@
           :props="props"
           class="row no-wrap justify-start items-center"
         >
-          <div v-if="showHex && props.row.type === 'byte'" class="message">
+          <div v-if="showHex && props.row.type === 'byte'">
             {{ stringToHex(props.row.message) }}
             <q-btn
               round
@@ -69,10 +69,7 @@
             </q-btn>
           </div>
 
-          <div
-            v-else-if="!showHex && props.row.type === 'byte'"
-            class="message"
-          >
+          <div v-else-if="!showHex && props.row.type === 'byte'">
             {{ bufToString(props.row.message) }}
             <q-btn
               round
